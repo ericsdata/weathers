@@ -1,9 +1,9 @@
 # weathers
 
-Look at these charts
+Look at these charts - but first I need to make them smaller
 
-[alt text](.\Plots\Temperatures.png)
+[Temperatures](.\Plots\Temperatures.png)
 
-[alt text](.\Plots\SnowTiles.png )
+[SnowTiles](.\Plots\SnowTiles.png )
 
 [Sunlight](.\Plots\Sunlight.png)
