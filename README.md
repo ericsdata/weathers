@@ -2,8 +2,8 @@
 
 Look at these charts
 
-[alt text](Plots\Temperatures.png "Title")
+[alt text](.\Plots\Temperatures.png)
 
-[alt text](Plots\SnowTiles.png "Title")
+[alt text](.\Plots\SnowTiles.png )
 
-[alt text](Plots\Sunlight.png "Title")
+[Sunlight](.\Plots\Sunlight.png)
