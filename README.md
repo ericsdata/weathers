@@ -2,9 +2,10 @@
 
 Look at these charts - but first I need to make them smaller
 
-<img src=".\Plots\Temperatures.png" width=300 align=right>
-[Temperatures](.\Plots\Temperatures.png)
+<img src=".\Plots\Temperatures.png" width=600 align=center>
 
-[SnowTiles](.\Plots\SnowTiles.png )
+<img src=".\Plots\SnowTiles.png" width=400 align=center>
 
-[Sunlight](.\Plots\Sunlight.png)
+<img src=".\Plots\Sunlight.png" width=400 align=center>
+
+
