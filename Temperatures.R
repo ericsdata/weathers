@@ -207,7 +207,7 @@ snowtiles <- g + geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf)
 
 ggsave(
   "SnowTiles.png",
-  plot = snow_tiles,
+  plot = snowtiles,
   device = NULL,
   path = "Plots",
   scale = 1,
