@@ -1,6 +1,17 @@
 ### File to create graphics related to weather comparisons
 
 
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(RColorBrewer)
+library(wesanderson)
+
+
 #### ===== DATA SET
 
 ## Read in Data
@@ -25,6 +36,13 @@ Date_Splitter <- function(dat, dateFormat){
 }
 
 
+dat$decade <- factor(floor(dat$year/10)*10, labels = c("1990s","2000s", "2010s", "2020s"))
+dat$season <- factor(dat$month, levels = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("Winter","Winter", 
+                                                                                   "Spring","Spring","Spring",
+                                                                                   "Summer","Summer","Summer",
+                                                                                   "Fall", "Fall", "Fall",
+                                                                                   "Winter"))
+dat$season <- factor(dat$season, levels = c("Winter", "Spring","Summer", "Fall"))
 
 #winter <- c("December", "January","February")
 #spring <- c("March", "April", "May")
@@ -59,47 +77,47 @@ daily$season <- relevel(daily$season, "Fall")
 g1 <- ggplot(daily[(daily$name != "Boston"),], 
              aes(x = name, y = calcTAVG, group = name,color = name))
 
-g1 +  theme_minimal() + 
-  ##Scakes
-  scale_y_continuous(breaks=c(0,20,40,60,80,100), labels=scales::number_format(suffix = "°"))+
-  scale_x_discrete(expand=c(3, 3))+
-  scale_shape_manual(values = c(0,4)) +
-  scale_alpha_continuous(range = c(.25,1), guide = "none")+
-  scale_color_manual(values = wes_palette("Zissou1")[c(1,3)] ) +
-   labs(title = "Daily Temperatures",
-        subtitle = "Previous 40 years",
-        y = "Mean Daily Temp [F]", 
-        x = "") +
-  ## Facet into months
-  facet_grid(. ~ month_name, scales = "free", space = "free_x") +
-  
-  stat_summary( fun.data = mean_sdl,
-    fun.args = list(mult = 1),
-    geom = "pointrange",
-    position = ggplot2::position_nudge(x = 0.10, y = 0),
-    ) +
-  
-  scale_fill_manual(values = wes_palette("Zissou1")[c(1,3)] )  +
-  
-  theme(axis.title.y = element_text(size = 10, face = "bold"),
-        axis.text.y = element_text(size = 10),
-        axis.text.x = element_blank(), 
-        legend.title = element_blank(),
-        legend.position = "bottom",
-        strip.text.x = element_text(face = "italic"),
-        panel.spacing = unit(0, "lines")
-        ,panel.grid.major.x = element_blank())
+temp_chart <- g1 +  theme_minimal() + 
+      ##Scakes
+      scale_y_continuous(breaks=c(0,20,40,60,80,100), labels=scales::number_format(suffix = "°"))+
+      scale_x_discrete(expand=c(3, 3))+
+      scale_shape_manual(values = c(0,4)) +
+      scale_alpha_continuous(range = c(.25,1), guide = "none")+
+      scale_color_manual(values = wes_palette("Zissou1")[c(1,3)] ) +
+       labs(title = "Daily Temperatures",
+            subtitle = "Previous 40 years",
+            y = "Mean Daily Temp [F]", 
+            x = "") +
+      ## Facet into months
+      facet_grid(. ~ month_name, scales = "free", space = "free_x") +
+      
+      stat_summary( fun.data = mean_sdl,
+        fun.args = list(mult = 1),
+        geom = "pointrange",
+        position = ggplot2::position_nudge(x = 0.10, y = 0),
+        ) +
+      
+      scale_fill_manual(values = wes_palette("Zissou1")[c(1,3)] )  +
+      
+      theme(axis.title.y = element_text(size = 10, face = "bold"),
+            axis.text.y = element_text(size = 10),
+            axis.text.x = element_blank(), 
+            legend.title = element_blank(),
+            legend.position = "bottom",
+            strip.text.x = element_text(face = "italic"),
+            panel.spacing = unit(0, "lines")
+            ,panel.grid.major.x = element_blank())
 
 ggsave(
   "Temperatures.png",
-  plot = last_plot(),
+  plot = temp_chart,
   device = NULL,
   path = "Plots",
   scale = 1,
   width = 10,
   height = 10,
   units = c("in"),
-  dpi = 500,
+  #dpi = 500,
   limitsize = TRUE
 )
 
@@ -167,7 +185,7 @@ p1d$SNWD[p1d$SNWD > 6] <- 6
 g <- ggplot(p1d, aes( y = monthweek, x = weekdayf, fill = snDepth))
 
 
-g + geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf), fill=("grey93"), alpha =.05)+
+snowtiles <- g + geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf), fill=("grey93"), alpha =.05)+
   geom_tile( aes(color = snowed),width=0.9, height=0.9) + 
   geom_text(aes(label=snowed), color = "darkslategrey", size = 5, 
             nudge_y = -.25)  +
@@ -189,7 +207,7 @@ g + geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf), fill=("grey
 
 ggsave(
   "SnowTiles.png",
-  plot = last_plot(),
+  plot = snow_tiles,
   device = NULL,
   path = "Plots",
   scale = 1,
@@ -203,6 +221,29 @@ ggsave(
 
 ### ======= SUNLIGHT
 
+## Set up daily data
+
+
+daily <- Date_Splitter(daily,"ymd")
+daily$decade <- factor(floor(daily$year/10)*10, labels = c("1980s", "1990s","2000s", "2010s", "2020s"))
+daily$season <- factor(daily$month, levels = c(1,2,3,4,5,6,7,8,9,10,11,12), labels = c("Winter","Winter", 
+                                                                                       "Spring","Spring","Spring",
+                                                                                       "Summer","Summer","Summer",
+                                                                                       "Fall", "Fall", "Fall",
+                                                                                       "Winter"))
+
+daily <- filter(daily, year <= 2020)
+
+daily$season <- relevel(daily$season, "Fall")
+
+
+### Mode Function
+
+getmode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
 ### Format data
 sundat_d <- daily %>% select(name, month, month_name,season, year, decade, TSUN)
 sundat_d$SunHours <- sundat_d$TSUN/60
@@ -213,8 +254,10 @@ sundat <- sundat_d %>% filter(!is.na(TSUN) & year < 1995 & name != "Boston") %>%
                            med = median(SunHours,na.rm = TRUE), avg = mean(SunHours, na.rm = TRUE)) 
 
 
+
+
 ## Plot
-g5 <-  ggplot(sundat, aes(x = SunHours, fill = name)) + geom_density(alpha = 0.5, binwidth = 1) +
+oTheSun <-  ggplot(sundat, aes(x = SunHours, fill = name)) + geom_density(alpha = 0.5, binwidth = 1) +
   theme_minimal() +
   scale_fill_manual(values = wes_palette("Zissou1")[c(1,3)])+
   geom_vline(aes(xintercept = med, color = name), size = 1,show.legend = NA, linetype = "dashed") +
@@ -222,11 +265,12 @@ g5 <-  ggplot(sundat, aes(x = SunHours, fill = name)) + geom_density(alpha = 0.5
   theme() + 
   labs(x = "Hours of Sunlight per Day", 
        y = "Count of Observed Days",
-       title = "Observed Hours of Sunlight\n1990 - 1994")
+       title = "Observed Hours of Sunlight\n1990 - 1994") + 
+  facet_wrap(.~ season, nrow = 4)
 
 ggsave(
   "Sunlight.png",
-  plot = last_plot(),
+  plot = oTheSun,
   device = NULL,
   path = "Plots",
   scale = 1,
