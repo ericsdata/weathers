@@ -8,16 +8,16 @@ All data was collected from weather monitoring stations at the airport of the re
 
 Aggregated daily temperatures
 
-<img src=".\Plots\Temperatures.png" width=350 align=center>
+<img src=".\Plots\Temperatures.png" width=400 align=center>
 
 ## Seasonal Sunshine
 
 Smoothed distribution of hours of sunlight a day - 5 years worth of data
 
-<img src=".\Plots\Sunlight.png" width=400 align=center>
+<img src=".\Plots\Sunlight.png" width=500 align=center>
 
 ## Snow Patterns in Portland
 
-<img src=".\Plots\SnowTiles.png" width=400 align=left>
+<img src=".\Plots\SnowTiles.png" width=500 align=left>
 
 
