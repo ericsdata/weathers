@@ -79,12 +79,12 @@ g1 <- ggplot(daily[(daily$name != "Boston"),],
 
 temp_chart <- g1 +  theme_minimal() + 
       ##Scakes
-      scale_y_continuous(breaks=c(0,20,40,60,80,100), labels=scales::number_format(suffix = "Â°"))+
+      scale_y_continuous(breaks=c(0,20,40,60,80,100), labels=scales::number_format(suffix = "°"))+
       scale_x_discrete(expand=c(3, 3))+
       scale_shape_manual(values = c(0,4)) +
       scale_alpha_continuous(range = c(.25,1), guide = "none")+
       scale_color_manual(values = wes_palette("Zissou1")[c(1,3)] ) +
-       labs(title = "Daily Temperatures",
+       labs(title = "Aggregated Average Daily Temperatures",
             subtitle = "Previous 40 years",
             y = "Mean Daily Temp [F]", 
             x = "") +
@@ -94,19 +94,21 @@ temp_chart <- g1 +  theme_minimal() +
       stat_summary( fun.data = mean_sdl,
         fun.args = list(mult = 1),
         geom = "pointrange",
-        position = ggplot2::position_nudge(x = 0.10, y = 0),
+        position = ggplot2::position_nudge(x = 0.10, y = 0)
         ) +
       
       scale_fill_manual(values = wes_palette("Zissou1")[c(1,3)] )  +
       
       theme(axis.title.y = element_text(size = 10, face = "bold"),
-            axis.text.y = element_text(size = 10),
+            axis.text.y = element_text(size = 14),
             axis.text.x = element_blank(), 
             legend.title = element_blank(),
             legend.position = "bottom",
-            strip.text.x = element_text(face = "italic"),
+            strip.text.x = element_text(face = "italic", size = 12),
             panel.spacing = unit(0, "lines")
             ,panel.grid.major.x = element_blank())
+
+temp_chart
 
 ggsave(
   "Temperatures.png",
