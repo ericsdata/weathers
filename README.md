@@ -8,7 +8,7 @@ All data was collected from weather monitoring stations at the airport of the re
 
 Aggregated daily temperatures
 
-<img src=".\Plots\Temperatures.png" width=200 align=center>
+<img src=".\Plots\Temperatures.png" width=350 align=center>
 
 ## Seasonal Sunshine
 
